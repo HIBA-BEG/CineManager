@@ -1,4 +1,5 @@
 const { Schema, default: mongoose } = require("mongoose");
+const bcrypt = require('bcrypt');
 
 const userSchema = new Schema({
   nom: {
@@ -13,8 +14,9 @@ const userSchema = new Schema({
     type: String,
     required: true,
     unique: true,
+    lowercase: true,
   },
-  motdepasse: {
+  hash_password: {
     type: String,
     required: true,
   },
@@ -27,8 +29,16 @@ const userSchema = new Schema({
     enum: ["Client", "Administrateur"],
     required: true,
   },
+  created_at: {
+    type: Date,
+    default: Date.now
+  }
 
 });
+
+userSchema.methods.comparePassword = function (password) {
+  return bcrypt.compareSync(password, this.hash_password);
+};
 
 const userModel = mongoose.model("users", userSchema);
 

@@ -5,14 +5,13 @@
 // mongoose: A MongoDB object modeling library for Node.js
 // nodemon: Automatically restarts the server when changes are detected.
 // winston: A versatile logging library for Node.js
-cors: Middleware for handling Cross-Origin Resource Sharing
-
+//  cors: Middleware for handling Cross-Origin Resource Sharing
+// Bcryptjs
+// Jsonwebtoken
 
 
 not installed yet: 
 
 
-// Bcryptjs
-// Jsonwebtoken
 // Nodemailer
 // Jest ou Mocha
