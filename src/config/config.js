@@ -9,9 +9,9 @@ const DB =process.env.MONGODB_URI
 const dbConnect = () => {
     mongoose.connect(DB)
         .then(() => {
-            console.log('DB Conected')
+            console.log('Database Connected')
         }).catch(() => {
-            console.log('Pb in Conect DB')
+            console.log('Problem in Database Connection')
         })
 }
 

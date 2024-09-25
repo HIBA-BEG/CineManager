@@ -15,6 +15,7 @@ const userSchema = new Schema({
     required: true,
     unique: true,
     lowercase: true,
+    trim: true,
   },
   hash_password: {
     type: String,
@@ -27,6 +28,15 @@ const userSchema = new Schema({
   type: {
     type: String,
     enum: ["Client", "Administrateur"],
+    default: "Client",
+    required: true,
+  },
+  numero_telephone: {
+    type: String,
+    required: true,
+  },
+  adresse: {
+    type: String,
     required: true,
   },
   created_at: {
@@ -43,3 +53,4 @@ userSchema.methods.comparePassword = function (password) {
 const userModel = mongoose.model("users", userSchema);
 
 module.exports = userModel;
+

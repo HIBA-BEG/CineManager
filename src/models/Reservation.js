@@ -1,13 +1,13 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose; 
 
-const Client = require('./Client');
+const User = require('./User');
 const Seance = require('./Seance');
 
 const reservationSchema = new Schema({
-    Client: { 
+    User: { 
         type: Schema.Types.ObjectId, 
-        ref: 'Client', 
+        ref: 'User', 
         required: true 
     },
     seance: { 
