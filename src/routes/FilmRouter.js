@@ -1,16 +1,17 @@
 const express = require("express");
 const FilmController = require("../controllers/FilmController");
+const { authMiddleware, isAdmin } = require('../middleware/authMiddleware');
+
 const router = express.Router();
-// const { verifyAdmin } = require('../middleware/authMiddleware');
 
 router.get('/AllFilms', FilmController.getAllFilms);
 // router.get('/films', FilmController.getAllFilms);
 router.get('/One/:id', FilmController.getFilm);
+
+router.use(authMiddleware);
+router.use(isAdmin);
 router.post('/AddFilm', FilmController.createFilm);
 router.put('/UpdateFilm/:id',FilmController.updateFilm);
 router.delete('/DeleteFilm/:id',FilmController.deleteFilm);
-// router.post('/AddFilm', verifyAdmin, FilmController.createFilm);
-// router.put('/UpdateFilm/:id',verifyAdmin, FilmController.updateFilm);
-// router.delete('/DeleteFilm/:id',verifyAdmin, FilmController.deleteFilm);
 
 module.exports = router;
