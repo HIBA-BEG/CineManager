@@ -1,11 +1,7 @@
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const {
-  adminModel,
-  clientModel,
-  userModel,
-} = require("../models/ModelsExports");
+const { userModel } = require("../models/ModelsExports");
 
 exports.register = async function (req, res) {
   try {
@@ -39,17 +35,33 @@ exports.login = async function (req, res) {
       { expiresIn: "1h" }
     );
 
-    return res.json({ 
-        token,
-        user: {
-            email: user.email,
-            nom: user.nom, 
-            prenom: user.prenom,
-            type: user.type,
-          }
-     });
+    return res.json({
+      token,
+      user: {
+        email: user.email,
+        nom: user.nom,
+        prenom: user.prenom,
+        type: user.type,
+      },
+    });
   } catch (err) {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
 
+// exports.loginRequired = function (req, res, next) {
+//   if (req.user) {
+//     next();
+//   } else {
+//     return res.status(401).json({ message: "Unauthorized user!!" });
+//   }
+// };
+
+// exports.profile = function (req, res, next) {
+//   if (req.user) {
+//     res.send(req.user);
+//     next();
+//   } else {
+//     return res.status(401).json({ message: "Invalid token" });
+//   }
+// };

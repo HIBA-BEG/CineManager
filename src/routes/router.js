@@ -1,5 +1,9 @@
 const express = require('express');
 const AuthRouter = require('./AuthRouter');
+const SalleRouter = require('./SalleRouter');
+const FilmRouter = require('./FilmRouter');
+const AdminRouter = require('./AdminRouter');
+const UserRouter = require('./UsersRouter');
 const router = express.Router();
 
 
@@ -8,6 +12,9 @@ router.get('/', (req, res) => {
 });
 
 
-router.use('/api/Auth', AuthRouter);
+router.use('/api/auth', AuthRouter);
+// router.use('/api/admin', AdminRouter);
+// router.use('/api/users', UserRouter);
+router.use('/api/films', FilmRouter)
 
 module.exports = router;

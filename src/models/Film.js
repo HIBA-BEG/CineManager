@@ -13,7 +13,7 @@ const filmSchema = new Schema({
     type: Buffer,
   },
   duree: {
-    type: Date,
+    type: String,
     required: true,
   },
   description: {

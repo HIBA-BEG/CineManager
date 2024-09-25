@@ -29,7 +29,7 @@ class Server {
     routing() {
         this.app.use('/', router);
     }
-
+    
     start() {
         this.app.listen(this.port, () => {
             console.log('Server started on port ' + this.port);
