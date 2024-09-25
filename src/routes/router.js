@@ -16,5 +16,6 @@ router.use('/api/auth', AuthRouter);
 // router.use('/api/admin', AdminRouter);
 // router.use('/api/users', UserRouter);
 router.use('/api/films', FilmRouter)
+router.use('/api/salles', SalleRouter)
 
 module.exports = router;
