@@ -31,6 +31,30 @@ class SalleController {
         }
     }
 
+    async updateSalle(req, res) {
+        try {
+            const updatedSalle = await SALLEdao.updateById(req.params.id, req.body);
+            if (!updatedSalle) {
+                return res.status(404).json({ message: 'Salle not found' });
+            }
+            res.status(200).json(updatedSalle);
+        } catch (error) {
+            res.status(400).json({ message: error.message });
+        }
+    }
+
+    async deleteSalle(req, res) {
+        try {
+            const deletedSalle = await SALLEdao.deleteById(req.params.id);
+            if (!deletedSalle) {
+                return res.status(404).json({ message: 'Salle not found' });
+            }
+            res.status(200).json({ message: 'Salle deleted successfully' });
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    }
+
 }
 
 module.exports = new SalleController();
