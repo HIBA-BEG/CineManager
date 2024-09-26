@@ -7,13 +7,16 @@ const UserRouter = require('./UsersRouter');
 const router = express.Router();
 
 
+router.use(express.json());
+router.use(express.urlencoded({ extended: true }));
+
 router.get('/', (req, res) => {
     res.send('Welcome to CinéManager!');
 });
 
 
 router.use('/api/auth', AuthRouter);
-// router.use('/api/admin', AdminRouter);
+router.use('/api/admin', AdminRouter);
 // router.use('/api/users', UserRouter);
 router.use('/api/films', FilmRouter);
 router.use('/api/salles', SalleRouter);

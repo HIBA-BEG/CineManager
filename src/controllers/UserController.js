@@ -1,10 +1,10 @@
 const jwt = require("jsonwebtoken");
-const USERdao = require('../dao/USERdao');
+const UserDao = require('../dao/UserDao');
 
 class UserController {
     async register(req, res) {
         try {
-            const newUser = await USERdao.create(req.body);
+            const newUser = await UserDao.create(req.body);
             newUser.hash_password = undefined;
             return res.status(201).json(newUser);
         } catch (err) {
@@ -16,7 +16,7 @@ class UserController {
 
     async login(req, res) {
         try {
-            const user = await USERdao.findByEmail(req.body.email);
+            const user = await UserDao.findByEmail(req.body.email);
 
             if (!user || !user.comparePassword(req.body.password)) {
                 return res
@@ -47,7 +47,7 @@ class UserController {
 
     async getUsers(req, res) {
         try {
-            const users = await USERdao.findAll();
+            const users = await UserDao.findAll();
             res.status(200).json(users);
         } catch (error) {
             res.status(500).json({ message: error.message });
@@ -56,7 +56,7 @@ class UserController {
 
     async getUser(req, res) {
         try {
-            const user = await USERdao.findById(req.params.id);
+            const user = await UserDao.findById(req.params.id);
             if (!user) {
                 return res.status(404).json({ message: 'User not found' });
             }
@@ -68,7 +68,7 @@ class UserController {
 
     async updateUser(req, res) {
         try {
-            const updatedUser = await USERdao.updateById(req.params.id, req.body);
+            const updatedUser = await UserDao.updateById(req.params.id, req.body);
             if (!updatedUser) {
                 return res.status(404).json({ message: 'User not found' });
             }
@@ -80,7 +80,7 @@ class UserController {
 
     async deleteUser(req, res) {
         try {
-            const deletedUser = await USERdao.deleteById(req.params.id);
+            const deletedUser = await UserDao.deleteById(req.params.id);
             if (!deletedUser) {
                 return res.status(404).json({ message: 'User not found' });
             }

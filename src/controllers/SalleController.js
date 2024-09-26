@@ -1,9 +1,9 @@
-const SALLEdao = require('../dao/SALLEdao');
+const SalleDao = require('../dao/SalleDao');
 
 class SalleController {
     async getSalles(req, res) {
         try {
-            const salles = await SALLEdao.findAll();
+            const salles = await SalleDao.findAll();
             res.status(200).json(salles);
         } catch (error) {
             res.status(500).json({ message: error.message });
@@ -12,7 +12,7 @@ class SalleController {
 
     async getSalle(req, res) {
         try {
-            const salle = await SALLEdao.findById(req.params.id);
+            const salle = await SalleDao.findById(req.params.id);
             if (!salle) {
                 return res.status(404).json({ message: 'Salle not found' });
             }
@@ -24,7 +24,7 @@ class SalleController {
 
     async createSalle(req, res) {
         try {
-            const newSalle = await SALLEdao.create(req.body);
+            const newSalle = await SalleDao.create(req.body);
             res.status(201).json(newSalle);
         } catch (error) {
             res.status(400).json({ message: error.message });
@@ -33,7 +33,7 @@ class SalleController {
 
     async updateSalle(req, res) {
         try {
-            const updatedSalle = await SALLEdao.updateById(req.params.id, req.body);
+            const updatedSalle = await SalleDao.updateById(req.params.id, req.body);
             if (!updatedSalle) {
                 return res.status(404).json({ message: 'Salle not found' });
             }
@@ -45,7 +45,7 @@ class SalleController {
 
     async deleteSalle(req, res) {
         try {
-            const deletedSalle = await SALLEdao.deleteById(req.params.id);
+            const deletedSalle = await SalleDao.deleteById(req.params.id);
             if (!deletedSalle) {
                 return res.status(404).json({ message: 'Salle not found' });
             }
