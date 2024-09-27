@@ -50,7 +50,7 @@ userSchema.methods.comparePassword = function (password) {
   return bcrypt.compareSync(password, this.hash_password);
 };
 
-const userModel = mongoose.model("users", userSchema);
+const userModel = mongoose.model("User", userSchema);
 
 module.exports = userModel;
 

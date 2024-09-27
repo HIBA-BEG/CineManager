@@ -19,8 +19,16 @@ const seanceSchema = new Schema({
     ref: "Salle",
     required: true,
   },
-  horaire: {
+  date: {
     type: Date,
+    required: true,
+  },
+  heure_debut: {
+    type: String, 
+    required: true,
+  },
+  heure_fin: {
+    type: String, 
     required: true,
   },
   tarif: {
@@ -35,7 +43,7 @@ const seanceSchema = new Schema({
     type: Boolean,
     default: false,
   },
-});
+}, { timestamps: true });
 
 const seanceModel = mongoose.model("seances", seanceSchema);
 

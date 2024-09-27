@@ -7,6 +7,7 @@ const authMiddleware = async (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET || "RESTFULAPIs");
     const user = await userModel.findOne({ _id: decoded._id, 'archived_user': false });
 
+    console.log('hilo'); 
     if (!user) {
       throw new Error();
     }
