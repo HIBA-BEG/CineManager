@@ -4,7 +4,8 @@ const SalleDao = require("../dao/SalleDao");
 class SeanceController {
   async createSeance(req, res) {
     const { film, salle, date, heure_debut, heure_fin, tarif } = req.body;
-    const userId = req.user.id;
+    // const userId = req.user.id;
+
     try {
       const salleDispo = await SalleDao.findById(salle);
 
@@ -12,7 +13,7 @@ class SeanceController {
         return res.status(404).json({ message: 'Salle not found' });
       }
 
-      const placesDispo = salleDispo.sieges.filter((siege) => siege.etat === "disponible").length;
+      const placesDispo = salleDispo.sieges.filter((siege) => siege.etat === true).length;
 
     //   console.log(placesDispo);
       if (placesDispo === 0) {
@@ -27,8 +28,10 @@ class SeanceController {
         heure_fin,
         tarif,
         placesDisponibles: placesDispo,
-        user: userId,
+        user: req.user.id,
       });
+
+      await SeanceDao.updateEtatSiege(newSeance._id);
 
       res.status(201).json(newSeance);
     } catch (error) {

@@ -5,6 +5,7 @@ const FilmRouter = require('./FilmRouter');
 const AdminRouter = require('./AdminRouter');
 const UserRouter = require('./UsersRouter');
 const SeanceRouter = require('./SeanceRouter');
+const ReservationRouter = require('./ReservationRouter');
 const router = express.Router();
 
 
@@ -22,5 +23,6 @@ router.use('/api/admin', AdminRouter);
 router.use('/api/films', FilmRouter);
 router.use('/api/salles', SalleRouter);
 router.use('/api/seances', SeanceRouter);
+router.use('/api/reservations', ReservationRouter);
 
 module.exports = router;
