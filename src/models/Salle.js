@@ -11,7 +11,7 @@ const siegeSchema = new Schema({
     default: "disponible",
   },
 });
-
+ 
 const salleSchema = new Schema({
   nom: {
     type: String,
