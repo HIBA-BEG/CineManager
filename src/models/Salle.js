@@ -6,9 +6,8 @@ const siegeSchema = new Schema({
     required: true,
   },
   etat: {
-    type: String,
-    enum: ["disponible", "reserved", "occupied"],
-    default: "disponible",
+    type: Boolean,
+  default: true, // true hiya dispo & false hiya reserved
   },
 });
  

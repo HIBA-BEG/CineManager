@@ -29,7 +29,7 @@ class SalleController {
       for (let i = 0; i < capacite; i++) {
         sieges.push({
           numero: i + 1,
-          etat: "disponible",
+          // etat: true,
         });
       }
       const newSalle = await SalleDao.create({
