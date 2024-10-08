@@ -1,5 +1,6 @@
 const ReservationDao = require("../dao/ReservationDao");
 const SeanceDao = require("../dao/SeanceDao");
+const EmailSender = require('./EmailSender');
 
 class ReservationController {
   async getAllReservations(req, res) {}
@@ -29,7 +30,9 @@ class ReservationController {
 
       if (unavailableSeats.length > 0) {
         return res.status(400).json({
-          message: `The following seats are reserved: ${unavailableSeats.join(", ")}. Please choose different seats.`,
+          message: `The following seats are reserved: ${unavailableSeats.join(
+            ", "
+          )}. Please choose different seats.`,
         });
       }
 
@@ -39,12 +42,37 @@ class ReservationController {
         sieges,
       });
 
+      await EmailSender.sendConfirmationEmail(req.user.email, reservation);
+
       res.status(201).json(reservation);
     } catch (error) {
       console.error("Error reserving seat:", error.message);
       res.status(400).json({ message: error.message });
     }
   }
+
+  async getAvailableSeats(req, res) {
+    const { id } = req.params;
+
+    if (!id) {
+      return res.status(400).json({ message: "Seance ID is required" });
+    }
+
+    try {
+      const availableSeats = await ReservationDao.getAvailableSieges(id);
+
+      if (!availableSeats) {
+        return res.status(404).json({ message: 'No available seats found' });
+      }
+      
+      res.status(200).json({ availableSeats });
+    } catch (error) {
+      console.error("Error fetching available seats:", error.message);
+      res.status(400).json({ message: error.message });
+    }
+  }
+
+  
 }
 
 module.exports = new ReservationController();

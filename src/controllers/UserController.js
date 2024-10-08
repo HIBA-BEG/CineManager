@@ -14,31 +14,39 @@ class UserController {
         }
     }
 
-    async login(req, res) {
+    login(req, res) {
         try {
-            const user = await UserDao.findByEmail(req.body.email);
+            UserDao.findByEmail(req.body.email).then( (user) => {
+                
+           
+                
+                if (!user || !user.comparePassword(req.body.password)) {
+                    return res
+                        .status(401)
+                        .json({ message: "Authentication failed. Invalid user or password." });
+                }
+    
+                const token = jwt.sign(
+                    { email: user.email, nom: user.nom, prenom: user.prenom, _id: user._id },
+                    process.env.JWT_SECRET || "RESTFULAPIs",
+                    { expiresIn: "1h" }
+                );
 
-            if (!user || !user.comparePassword(req.body.password)) {
-                return res
-                    .status(401)
-                    .json({ message: "Authentication failed. Invalid user or password." });
+                
+                return res.json({
+                    token,
+                    user: {
+                        email: user.email,
+                        nom: user.nom,
+                        prenom: user.prenom,
+                        type: user.type,
+                    },
+                });
+                
             }
+            )
 
-            const token = jwt.sign(
-                { email: user.email, nom: user.nom, prenom: user.prenom, _id: user._id },
-                process.env.JWT_SECRET || "RESTFULAPIs",
-                { expiresIn: "1h" }
-            );
 
-            return res.json({
-                token,
-                user: {
-                    email: user.email,
-                    nom: user.nom,
-                    prenom: user.prenom,
-                    type: user.type,
-                },
-            });
         } catch (err) {
             console.error(err);
             return res.status(500).json({ message: "Internal server error" });

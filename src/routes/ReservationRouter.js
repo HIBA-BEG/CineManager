@@ -7,6 +7,8 @@ const router = express.Router();
 router.use(authMiddleware);
 
 router.post('/AddReservation', ReservationController.createReservation);
+router.get('/AvailaibleSeats/:id', ReservationController.getAvailableSeats);
+
 // router.get('/AllReservationss', ReservationController.getAllReservations);
 // router.get('/One/:id', ReservationController.);
 

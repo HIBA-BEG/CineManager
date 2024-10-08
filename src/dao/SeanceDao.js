@@ -12,18 +12,17 @@ class SeanceDao {
 
   async findAll() {
     try {
-      return (
-        seanceModel
+      const seances = await seanceModel
           .find({ archived_seance: false })
           .populate("user")
           .populate("film")
-          // .populate("salle");
           .populate({
-            path: "salle",
-            populate: { path: "sieges" },
-          })
-      );
-    } catch (error) {
+              path: "salle",
+              populate: { path: "sieges" },
+          });
+
+      return seances;
+  } catch (error) {
       throw new Error("Error fetching toutes les Seance");
     }
   }

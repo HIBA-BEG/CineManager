@@ -42,7 +42,20 @@ class SeanceController {
   async getAllSeances(req, res) {
     try {
       const seances = await SeanceDao.findAll();
-      res.status(200).json(seances);
+      // console.log(seances);
+
+      const seancesWithImages = seances.map((seance) => ({
+        ...seance._doc,
+        film: seance.film ? { ...seance.film,
+              affiche:
+                typeof seance.film.affiche === "string"
+                  ? `${req.protocol}://${req.get("host")}${seance.film.affiche}`
+                  : null,
+            }
+          : null,
+      }));
+
+      res.status(200).json(seancesWithImages);
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
@@ -57,7 +70,20 @@ class SeanceController {
         return res.status(404).json({ message: 'Seance not found' });
       }
 
-      res.status(200).json(seance);
+      const seanceWithImage = {
+        ...seance._doc,
+        film: seance.film
+          ? {
+              ...seance.film._doc,
+              affiche:
+                typeof seance.film.affiche === "string"
+                  ? `${req.protocol}://${req.get("host")}${seance.film.affiche}`
+                  : null,
+            }
+          : null,
+      };
+
+      res.status(200).json(seanceWithImage);
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
