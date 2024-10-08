@@ -5,6 +5,7 @@ const app = express();
 const router = require('./src/routes/router');
 const dbConnect = require('./src/config/config');
 
+
 class Server {
     constructor(port = 3000) {
         this.port = port;
@@ -19,11 +20,11 @@ class Server {
     }
 
     config() {
-        this.app.use(cors());
+        // this.app.use(cors());
+        this.app.use(cors({ origin: 'http://localhost:3001' }));
         this.app.use(express.json());
-        this.app.set('view engine', 'ejs');
-        this.app.set('views', path.join(__dirname, 'views'));
-        this.app.use(express.static(path.join(__dirname, 'public')));
+        this.app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+        
     }
 
     routing() {

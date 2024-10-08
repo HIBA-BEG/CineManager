@@ -5,7 +5,7 @@ class FILMdao {
         try {
             return await filmModel.find({ archived_film: false });
         } catch (error) {
-            throw new Error('Error fetching Films');
+            throw new Error('Error fetching Films' + error.message);
         }
     }
 
@@ -13,7 +13,7 @@ class FILMdao {
         try {
             return await filmModel.findById(id);
         } catch (error) {
-            throw new Error('Error finding Film');
+            throw new Error('Error finding Film' + error.message);
         }
     }
 
@@ -23,7 +23,7 @@ class FILMdao {
             const newFilm = new filmModel(FilmData);
             return await newFilm.save();
         } catch (error) {
-            throw new Error('Error creating Film');
+            throw new Error('Error creating Film' + error.message);
         }
     }
 
@@ -31,7 +31,7 @@ class FILMdao {
         try {
             return await filmModel.findByIdAndUpdate(id, updateData, { new: true });
         } catch (error) {
-            throw new Error('Error updating Film');
+            throw new Error('Error updating Film' + error.message);
         }
     }
 
@@ -39,7 +39,7 @@ class FILMdao {
         try {
             return await filmModel.findByIdAndUpdate(id, { archived_film: true }, { new: true });
         } catch (error) {
-            throw new Error('Error deleting Film');
+            throw new Error('Error deleting Film' + error.message);
         }
     }
 }

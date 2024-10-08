@@ -10,7 +10,7 @@ const filmSchema = new Schema({
     required: true,
   },
   affiche: {
-    type: Buffer,
+    type: String,
   },
   duree: {
     type: String,
