@@ -16,10 +16,7 @@ class SeanceDao {
           .find({ archived_seance: false })
           .populate("user")
           .populate("film")
-          .populate({
-              path: "salle",
-              populate: { path: "sieges" },
-          });
+          .populate("salle");
 
       return seances;
   } catch (error) {
@@ -29,11 +26,22 @@ class SeanceDao {
 
   async findById(id) {
     try {
-      return seanceModel
+      console.log(`Searching for Seance with id: ${id}`);
+
+      const count = await seanceModel.countDocuments();
+      console.log(`Total number of documents in Seance collection: ${count}`);
+      
+      const sampleSeance = await seanceModel.findOne();
+      console.log('Sample Seance document:', sampleSeance);
+
+      const seance = await seanceModel
         .findById(id)
         .populate("user")
         .populate("film")
         .populate("salle");
+      
+      console.log(`Seance found:`, seance);
+      return seance;
     } catch (error) {
       throw new Error("Error fetching une Seance");
     }
@@ -51,43 +59,43 @@ class SeanceDao {
     }
   }
 
-  async updateEtatSiege(seanceId, seatNumber, status) {
-    try {
-      const seance = await seanceModel.findById(seanceId).populate("salle");
+  // async updateEtatSiege(seanceId, seatNumber, status) {
+  //   try {
+  //     const seance = await seanceModel.findById(seanceId).populate("salle");
 
-      if (!seance || !seance.salle) {
-        throw new Error(`Seance or Salle not found for ID ${seanceId}`);
-      }
+  //     if (!seance || !seance.salle) {
+  //       throw new Error(`Seance or Salle not found for ID ${seanceId}`);
+  //     }
 
-      const seat = seance.salle.sieges.find(
-        (siege) => siege.numero === seatNumber
-      );
+  //     const seat = seance.salle.sieges.find(
+  //       (siege) => siege.numero === seatNumber
+  //     );
 
-      if (!seat) {
-        throw new Error(`Seat number ${seatNumber} not found in salle`);
-      }
+  //     if (!seat) {
+  //       throw new Error(`Seat number ${seatNumber} not found in salle`);
+  //     }
 
-      if (!seat.etat) {
-        throw new Error(
-          `Seat number ${seatNumber} is already reserved. Please choose another seat.`
-        );
-      }
+  //     if (!seat.etat) {
+  //       throw new Error(
+  //         `Seat number ${seatNumber} is already reserved. Please choose another seat.`
+  //       );
+  //     }
 
-      seat.etat = status;
+  //     seat.etat = status;
 
-      await seance.salle.save();
+  //     await seance.salle.save();
 
-      const updatedPlacesDisponibles = seance.salle.sieges.filter((siege) => siege.etat === true).length;
+  //     const updatedPlacesDisponibles = seance.salle.sieges.filter((siege) => siege.etat === true).length;
 
-      seance.placesDisponibles = updatedPlacesDisponibles;
-      await seance.save();
+  //     seance.placesDisponibles = updatedPlacesDisponibles;
+  //     await seance.save();
 
-      return seance;
-    } catch (error) {
-      console.error("Error updating seat status:", error.message);
-      throw new Error(`Error updating seat status: ${error.message}`);
-    }
-  }
+  //     return seance;
+  //   } catch (error) {
+  //     console.error("Error updating seat status:", error.message);
+  //     throw new Error(`Error updating seat status: ${error.message}`);
+  //   }
+  // }
 }
 
 module.exports = new SeanceDao();

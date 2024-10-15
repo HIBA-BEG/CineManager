@@ -1,16 +1,5 @@
 const { Schema, default: mongoose } = require("mongoose");
 
-const siegeSchema = new Schema({
-  numero: {
-    type: Number,
-    required: true,
-  },
-  etat: {
-    type: Boolean,
-  default: true, // true hiya dispo & false hiya reserved
-  },
-});
- 
 const salleSchema = new Schema({
   nom: {
     type: String,
@@ -20,7 +9,6 @@ const salleSchema = new Schema({
     type: Number,
     required: true,
   },
-  sieges: [siegeSchema],
   type: {
     type: String,
     required: true,

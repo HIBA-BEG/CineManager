@@ -1,7 +1,7 @@
 const { Schema, default: mongoose } = require("mongoose");
 const Film = require("./Film");
 const Salle = require("./Salle");
-const USer = require("./User");
+const User = require("./User");
 
 const seanceSchema = new Schema({
   user: {

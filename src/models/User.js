@@ -39,6 +39,18 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
+  birthday: {
+    type: Date,
+  },
+  profilePic: {
+    type: String,
+  },
+  abonnement: {
+    type: String,
+    enum: ["Subscribed", "Basic"],
+    default: "Basic",
+    required: true,
+  },
   created_at: {
     type: Date,
     default: Date.now

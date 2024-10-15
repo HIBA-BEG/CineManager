@@ -1,7 +1,11 @@
 const { userModel } = require("../models/ModelsExports");
 const bcrypt = require("bcrypt");
+const minioClient = require("../../minio");
 
-class USERdao {
+const fs = require("fs");
+
+
+class UserDao {
   async findAll() {
     try {
       return await userModel.find();
@@ -27,13 +31,37 @@ class USERdao {
   }
 
   async create(userData) {
-      try {
-          const newUser = new userModel(userData);
-          newUser.hash_password = bcrypt.hashSync(userData.password, 10);
-          return await newUser.save();
-      } catch (error) {
-          throw new Error('Error creating User');
-      }
+    try {
+      const newUser = new userModel(userData);
+      newUser.hash_password = bcrypt.hashSync(userData.password, 10);
+  const user = await newUser.save();
+  console.log()
+      return user
+    } catch (error) {
+      throw new Error("Error creating User");
+    }
+  }
+
+  async uploadToMinioProfilePic(file) {
+    return new Promise((resolve, reject) => {
+      const fileStream = fs.createReadStream(file.path);
+      const fileName = Date.now() + "-" + file.originalname;
+
+      minioClient.putObject(
+        process.env.MINIO_BUCKET_PROFILEPIC,
+        fileName,
+        fileStream,
+        (err, etag) => {
+          if (err) {
+            console.error("Error uploading to MinIO:", err);
+            return reject(err);
+          }
+          resolve(
+            `${process.env.MINIO_ENDPOINT}:${process.env.MINIO_PORT}/${process.env.MINIO_BUCKET_PROFILEPIC}/${fileName}`
+          );
+        }
+      );
+    });
   }
 
   async updateById(id, updateData) {
@@ -55,6 +83,54 @@ class USERdao {
       throw new Error("Error deleting User");
     }
   }
+
+  async updateProfile(id, updateData) {
+    try {
+      if (updateData.password) {
+        updateData.hash_password = bcrypt.hashSync(updateData.password, 10);
+        delete updateData.password;
+      }
+      return await userModel.findByIdAndUpdate(id, updateData, { new: true });
+    } catch (error) {
+      throw new Error("Error updating User profile");
+    }
+  }
+
+  async updateSubscription(id, subscriptionType) {
+    try {
+      return await userModel.findByIdAndUpdate(
+        id,
+        { abonnement: subscriptionType },
+        { new: true }
+      );
+    } catch (error) {
+      throw new Error("Error updating User subscription");
+    }
+  }
+
+  async banUser(id) {
+    try {
+      return await userModel.findByIdAndUpdate(
+        id,
+        { archived_user: true },
+        { new: true }
+      );
+    } catch (error) {
+      throw new Error("Error banning User");
+    }
+  }
+
+  async activateUser(id) {
+    try {
+      return await userModel.findByIdAndUpdate(
+        id,
+        { archived_user: false },
+        { new: true }
+      );
+    } catch (error) {
+      throw new Error("Error activating User");
+    }
+  }
 }
 
-module.exports = new USERdao();
+module.exports = new UserDao();

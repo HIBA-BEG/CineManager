@@ -13,13 +13,6 @@ class SeanceController {
         return res.status(404).json({ message: 'Salle not found' });
       }
 
-      const placesDispo = salleDispo.sieges.filter((siege) => siege.etat === true).length;
-
-    //   console.log(placesDispo);
-      if (placesDispo === 0) {
-        return res.status(400).json({ message: 'No available seats in the room' });
-      }
-
       const newSeance = await SeanceDao.create({
         film,
         salle,
@@ -27,11 +20,9 @@ class SeanceController {
         heure_debut,
         heure_fin,
         tarif,
-        placesDisponibles: placesDispo,
+        placesDisponibles: salleDispo.capacite,
         user: req.user.id,
       });
-
-      await SeanceDao.updateEtatSiege(newSeance._id);
 
       res.status(201).json(newSeance);
     } catch (error) {

@@ -17,13 +17,19 @@ const reservationSchema = new Schema({
   },
   statut: {
     type: String,
-    enum: ["en attente", "Confirme", "Annule"],
-    default: "en attente",
+    enum: ["Confirme", "Annule"],
+    default: "Confirme",
   },
   sieges: [
     {
-      type: Number,
-      required: true,
+      numero: {
+        type: Number,
+        required: true,
+      },
+      etat: {
+        type: Boolean,
+        default: false, // false hiya dispo & true hiya reserved
+      },
     },
   ],
   date: {

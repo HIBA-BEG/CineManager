@@ -25,18 +25,11 @@ class SalleController {
   async createSalle(req, res) {
       const { nom, capacite, type} = req.body;
     try {
-      const sieges = [];
-      for (let i = 0; i < capacite; i++) {
-        sieges.push({
-          numero: i + 1,
-          // etat: true,
-        });
-      }
+      
       const newSalle = await SalleDao.create({
         nom,
         capacite,
         type,
-        sieges,
       });
       res.status(201).json(newSalle);
     } catch (error) {

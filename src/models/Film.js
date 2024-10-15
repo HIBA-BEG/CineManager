@@ -5,8 +5,9 @@ const filmSchema = new Schema({
     type: String,
     required: true,
   },
-  genre: {
-    type: String,
+  genre: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'Genre',
     required: true,
   },
   affiche: {
@@ -23,6 +24,30 @@ const filmSchema = new Schema({
     type: Boolean,
     default: false,
   },
+  dateSortie: {
+    type: Date,
+  },
+  producer: {
+    type: String,
+    required: true,
+  },
+  status: {
+    type: String,
+    enum: ["Public", "Private"],
+    default: "Public",
+    required: true,
+  },
+  video: {
+    type: String,
+  },
+  isStreamed: {
+    type: Boolean,
+    default: false,
+  },
+  releaseStreamDate: {
+    type: Date,
+  },
+
 });
 
 const filmModel = mongoose.model("Film", filmSchema);
