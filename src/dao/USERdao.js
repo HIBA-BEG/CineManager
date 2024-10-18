@@ -120,7 +120,7 @@ class UserDao {
     }
   }
 
-  async activateUser(id) {
+  async unBanUser(id) {
     try {
       return await userModel.findByIdAndUpdate(
         id,

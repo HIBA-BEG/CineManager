@@ -35,22 +35,12 @@ class SeanceController {
       const seances = await SeanceDao.findAll();
       // console.log(seances);
 
-      const seancesWithImages = seances.map((seance) => ({
-        ...seance._doc,
-        film: seance.film ? { ...seance.film,
-              affiche:
-                typeof seance.film.affiche === "string"
-                  ? `${req.protocol}://${req.get("host")}${seance.film.affiche}`
-                  : null,
-            }
-          : null,
-      }));
-
-      res.status(200).json(seancesWithImages);
+      res.status(200).json(seances);
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
   }
+
 
   async getSeanceById(req, res) {
     // const { id } = req.params;
@@ -61,20 +51,20 @@ class SeanceController {
         return res.status(404).json({ message: 'Seance not found' });
       }
 
-      const seanceWithImage = {
-        ...seance._doc,
-        film: seance.film
-          ? {
-              ...seance.film._doc,
-              affiche:
-                typeof seance.film.affiche === "string"
-                  ? `${req.protocol}://${req.get("host")}${seance.film.affiche}`
-                  : null,
-            }
-          : null,
-      };
+      // const seanceWithImage = {
+      //   ...seance._doc,
+      //   film: seance.film
+      //     ? {
+      //         ...seance.film._doc,
+      //         affiche:
+      //           typeof seance.film.affiche === "string"
+      //             ? `${req.protocol}://${req.get("host")}${seance.film.affiche}`
+      //             : null,
+      //       }
+      //     : null,
+      // };
 
-      res.status(200).json(seanceWithImage);
+      res.status(200).json(seance);
     } catch (error) {
       res.status(500).json({ message: error.message });
     }

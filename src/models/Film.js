@@ -5,11 +5,12 @@ const filmSchema = new Schema({
     type: String,
     required: true,
   },
-  genre: { 
+  genre: [
+    { 
     type: mongoose.Schema.Types.ObjectId, 
     ref: 'Genre',
-    required: true,
-  },
+    // required: true,
+  }],
   affiche: {
     type: String,
   },
@@ -47,6 +48,10 @@ const filmSchema = new Schema({
   releaseStreamDate: {
     type: Date,
   },
+  created_at: {
+    type: Date,
+    default: Date.now
+  }
 
 });
 

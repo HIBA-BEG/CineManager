@@ -8,15 +8,7 @@ class FilmController {
     try {
       const films = await FilmDao.findAll();
 
-      const filmsWithImages = films.map((film) => ({
-        ...film._doc,
-        affiche:
-          typeof film.affiche === "string"
-            ? `${req.protocol}://${req.get("host")}${film.affiche}`
-            : null,
-      }));
-
-      res.status(200).json(filmsWithImages);
+      res.status(200).json(films);
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
@@ -28,87 +20,39 @@ class FilmController {
       if (!film) {
         return res.status(404).json({ message: "Film not found" });
       }
-
-      const filmWithImage = {
-        ...film._doc,
-        affiche:
-          typeof film.affiche === "string"
-            ? `${req.protocol}://${req.get("host")}${film.affiche}`
-            : null,
-      };
-
-      res.status(200).json(filmWithImage);
+      res.status(200).json(film);
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
   }
 
-  async uploadToMinioFilm(file) {
-    return new Promise((resolve, reject) => {
-      const fileStream = fs.createReadStream(file.path);
-      const fileName = Date.now() + "-" + file.originalname;
-
-      minioClient.putObject(
-        "film",
-        fileName,
-        fileStream,
-        (err, etag) => {
-          if (err) {
-            return reject(err);
-          }
-          resolve(
-            `${process.env.MINIO_ENDPOINT}:${process.env.MINIO_PORT}/${process.env.MINIO_BUCKET_FILM}/${fileName}`
-          );
-        }
-      );
-    });
-  }
-  async uploadToMinioAffiche(file) {
-    return new Promise((resolve, reject) => {
-      const fileStream = fs.createReadStream(file.path);
-      const fileName = Date.now() + "-" + file.originalname;
-
-      minioClient.putObject(
-        "affiche",
-        fileName,
-        fileStream,
-        (err, etag) => {
-          if (err) {
-            return reject(err);
-          }
-          resolve(
-            `${process.env.MINIO_ENDPOINT}:${process.env.MINIO_PORT}/${process.env.MINIO_BUCKET_AFFICHE}/${fileName}`
-          );
-        }
-      );
-    });
-  }
-
   async createFilm(req, res) {
+    console.log(req.body)
     try {
-      const { titre, genre, duree, description, dateSortie, producer, status, releaseStreamDate } = req.body;
+      const { titre, genres, duree, description, dateSortie, producer, status, releaseStreamDate } = req.body;
       let afficheUrl = null;
       let videoUrl = null;
+      // console.log(req.body)
 
-      // Check and upload 'affiche' if exists
       if (req.files && req.files.affiche && req.files.affiche.length > 0) {
-        afficheUrl = await uploadToMinioAffiche(req.files.affiche[0]);
+        const afficheFile = req.files.affiche[0];
+        afficheUrl = await FilmDao.uploadToMinioAffiche(afficheFile);
       }
 
-      // Check and upload 'video' if exists
       if (req.files && req.files.video && req.files.video.length > 0) {
-        videoUrl = await uploadToMinioFilm(req.files.video[0]);
+        const videoFile = req.files.video[0];
+        videoUrl = await FilmDao.uploadToMinioFilm(videoFile);
       }
 
-      if (!titre || !genre || !duree) {
-        return res
-          .status(400)
-          .json({ message: "All required fields must be provided" });
-      }
+      // if (!titre || !duree) {
+      //   return res
+      //     .status(400)
+      //     .json({ message: "All required fields must be provided" });
+      // }
 
       const newFilmData = {
         titre,
-        genre,
+        genre : genres,
         duree,
         description,
         dateSortie, 
@@ -116,7 +60,7 @@ class FilmController {
         status, 
         releaseStreamDate,
         affiche: afficheUrl,
-        video: videoUrl, // Store video URL
+        video: videoUrl,
       };
 
       const newFilm = await FilmDao.create(newFilmData);
@@ -125,35 +69,6 @@ class FilmController {
       res.status(400).json({ message: error.message });
     }
   }
-  // async createFilm(req, res) {
-  //   try {
-  //     //   console.log("Request body:", req.body);
-  //     //   console.log("Uploaded file:", req.file);
-
-  //     const { titre, genre, duree, description } = req.body;
-
-  //     const affiche = req.file ? `/uploads/${req.file.filename}` : null;
-
-  //     if (!titre || !genre || !duree) {
-  //       return res
-  //         .status(400)
-  //         .json({ message: "All required fields must be provided" });
-  //     }
-
-  //     const newFilmData = {
-  //       titre,
-  //       genre,
-  //       duree,
-  //       description,
-  //       affiche,
-  //     };
-
-  //     const newFilm = await FilmDao.create(newFilmData);
-  //     res.status(201).json(newFilm);
-  //   } catch (error) {
-  //     res.status(400).json({ message: error.message });
-  //   }
-  // }
 
   async updateFilm(req, res) {
     try {

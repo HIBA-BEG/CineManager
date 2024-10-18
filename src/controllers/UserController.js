@@ -6,7 +6,7 @@ class UserController {
   async register(req, res) {
     try {
       const { email, password, nom, prenom, type, numero_telephone, adresse, birthday, abonnement } = req.body;
-console.log(req.body)
+// console.log(req.body)
       let profilePicUrl = null;
       
       if (req.files && req.files.profilePic) {
@@ -68,6 +68,7 @@ console.log(req.body)
             nom: user.nom,
             prenom: user.prenom,
             type: user.type,
+            abonnement: user.abonnement,
           },
         });
       })
@@ -105,6 +106,7 @@ console.log(req.body)
       if (!updatedUser) {
         return res.status(404).json({ message: "User not found" });
       }
+      updatedUser.hash_password = undefined;
       res.status(200).json(updatedUser);
     } catch (error) {
       res.status(400).json({ message: error.message });
@@ -129,6 +131,7 @@ console.log(req.body)
       if (!updatedUser) {
         return res.status(404).json({ message: "User not found" });
       }
+      updatedUser.hash_password = undefined;
       res.status(200).json(updatedUser);
     } catch (error) {
       res.status(400).json({ message: error.message });
@@ -137,13 +140,18 @@ console.log(req.body)
 
   async updateSubscription(req, res) {
     try {
+      const { abonnement } = req.body;
+      if (!['Subscribed', 'Basic'].includes(abonnement)) {
+        return res.status(400).json({ message: "Invalid subscription type" });
+      }
       const updatedUser = await UserDao.updateSubscription(
         req.params.id,
-        req.body.subscriptionType
+        abonnement
       );
       if (!updatedUser) {
         return res.status(404).json({ message: "User not found" });
       }
+      updatedUser.hash_password = undefined;
       res.status(200).json(updatedUser);
     } catch (error) {
       res.status(400).json({ message: error.message });
@@ -162,10 +170,10 @@ console.log(req.body)
     }
   }
 
-  async activateUser(req, res) {
+  async unBanUser(req, res) {
     try {
-      const activatedUser = await UserDao.activateUser(req.params.id);
-      if (!activatedUser) {
+      const unbannedUser = await UserDao.unBanUser(req.params.id);
+      if (!unbannedUser) {
         return res.status(404).json({ message: "User not found" });
       }
       res.status(200).json({ message: "User activated successfully" });

@@ -1,6 +1,6 @@
+const { default: mongoose } = require("mongoose");
 const { reservationModel, seanceModel } = require("../models/ModelsExports");
 
-const nodemailer = require("nodemailer");
 
 class ReservationDao {
   async create(reservationData) {
@@ -14,25 +14,18 @@ class ReservationDao {
   }
   async getAllReservations() {
     try {
-      return reservationModel
+      return await reservationModel
         .find({ archived_reservation: false })
         .populate("client")
-        .populate("seance");
+        .populate({
+          path: 'seance',
+          model: mongoose.model('seances')
+        });
     } catch (error) {
       throw new Error("Error fetching reservations: " + error.message);
     }
   }
 
-  // async getReservationsBySeance(seanceId) {
-  //   try {
-  //     return reservationModel
-  //       .find({ seance: seanceId, archived_reservation: false })
-  //       .select('sieges');
-  //   } catch (error) {
-  //     throw new Error("Error fetching reservations by seance: " + error.message);
-  //   }
-  // }
-  
   async getReservationsBySeance(seanceId) {
     try {
       return await reservationModel
@@ -41,38 +34,49 @@ class ReservationDao {
           archived_reservation: false,
           statut: "Confirme"
         })
-        .select('sieges');
+        .populate('client')
+        .populate('seance');
     } catch (error) {
       throw new Error("Error fetching reservations by seance: " + error.message);
     }
   }
 
-  // async getAvailableSieges(id) {
-  //   try {
-  //     const seance = await seanceModel.findById(id)
-  //       .populate("salle")
-  //       .select("sieges");
+  async findById(id) {
+    try {
+      return await reservationModel
+        .findById(id)
+        .populate('user')
+        .populate('seance');
+    } catch (error) {
+      throw new Error("Error fetching reservation: " + error.message);
+    }
+  }
 
-  //     // console.log(seance.salle.sieges);
+  async updateReservation(id, updateData) {
+    try {
+      return await reservationModel.findByIdAndUpdate(id, updateData, { new: true });
+    } catch (error) {
+      throw new Error("Error updating reservation: " + error.message);
+    }
+  }
 
-  //     if (!seance) {
-  //       console.error("Seance not found with ID:", id);
-  //       throw new Error("Seance not found");
-  //     }
+  async annulerReservation(id) {
+    try {
+      return await reservationModel.findByIdAndUpdate(id, { archived_reservation: true }, { new: true });
+    } catch (error) {
+      throw new Error("Error deleting reservation: " + error.message);
+    }
+  }
 
-  //     if (!seance.salle.sieges || !Array.isArray(seance.salle.sieges)) {
-  //       throw new Error("Sieges field is missing or not an array");
-  //     }
-
-  //     const availableSieges = seance.salle.sieges.filter(
-  //       (siege) => siege.etat === true
-  //     );
-
-  //     return availableSieges;
-  //   } catch (error) {
-  //     throw new Error("Error fetching available seats: " + error.message);
-  //   }
-  // }
+  async getReservationsByUser(userId) {
+    try {
+      return await reservationModel
+        .find({ client: userId, archived_reservation: false })
+        .populate('seance');
+    } catch (error) {
+      throw new Error("Error fetching user reservations: " + error.message);
+    }
+  }
 }
 
 module.exports = new ReservationDao();

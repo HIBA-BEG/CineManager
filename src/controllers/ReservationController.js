@@ -99,7 +99,63 @@ class ReservationController {
     }
   }
 
-  
+  async getReservationById(req, res) {
+    try {
+      const reservation = await ReservationDao.findById(req.params.id);
+      if (!reservation) {
+        return res.status(404).json({ message: "Reservation not found" });
+      }
+      res.status(200).json(reservation);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  }
+
+  async updateReservation(req, res) {
+    try {
+      const updatedReservation = await ReservationDao.updateReservation(req.params.id, req.body);
+      if (!updatedReservation) {
+        return res.status(404).json({ message: "Reservation not found" });
+      }
+      res.status(200).json(updatedReservation);
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
+  }
+
+  async annulerReservation(req, res) {
+    try {
+      const ReservationAnnule = await ReservationDao.annulerReservation(req.params.id);
+      if (!ReservationAnnule) {
+        return res.status(404).json({ message: "Reservation not found" });
+      }
+      res.status(200).json({ message: "Reservation annulé successfully" });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  }
+
+  async getUserReservations(req, res) {
+    try {
+      const reservations = await ReservationDao.getReservationsByUser(req.user._id);
+      res.status(200).json(reservations);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  }
+
+  // async getReservationsBySeance(req, res) {
+  //   try {
+  //     const seanceId = req.params.seanceId;
+  //     console.log("Searching for reservations with seanceId:", seanceId);
+  //     const reservations = await ReservationDao.getReservationsBySeance(seanceId);
+  //     console.log("Found reservations:", JSON.stringify(reservations, null, 2));
+  //     res.status(200).json(reservations);
+  //   } catch (error) {
+  //     console.error("Error in getReservationsBySeance:", error);
+  //     res.status(500).json({ message: error.message });
+  //   }
+  // }
 }
 
 module.exports = new ReservationController();

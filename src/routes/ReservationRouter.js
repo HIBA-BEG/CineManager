@@ -5,15 +5,23 @@ const { authMiddleware, isAdmin } = require('../middleware/authMiddleware');
 const router = express.Router();
 
 router.use(authMiddleware);
-
-router.post('/AddReservation', ReservationController.createReservation);
 router.get('/AvailaibleSeats/:id', ReservationController.getAvailableSeats);
 
-// router.get('/AllReservationss', ReservationController.getAllReservations);
-// router.get('/One/:id', ReservationController.);
+router.get('/One/:id', ReservationController.getReservationById);
+router.put('/:id', ReservationController.updateReservation);
+router.post('/AddReservation', ReservationController.createReservation);
+router.get('/MyReservations', ReservationController.getUserReservations);
 
+
+router.delete('/:id', ReservationController.annulerReservation);
+
+
+router.use(isAdmin);
+
+router.get('/AllReservations', ReservationController.getAllReservations);
+// router.get('/seance/:seanceId', ReservationController.getReservationsBySeance);
 
 // router.put('/UpdateReservation/:id',ReservationController.);
-// router.delete('/AnnulerReservation/:id',ReservationController.);
+
 
 module.exports = router;

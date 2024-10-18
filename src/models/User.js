@@ -61,7 +61,9 @@ const userSchema = new Schema({
 userSchema.methods.comparePassword = function (password) {
   return bcrypt.compareSync(password, this.hash_password);
 };
-
+userSchema.methods.isSubscribed = function () {
+  return this.abonnement === "Subscribed";
+};
 const userModel = mongoose.model("User", userSchema);
 
 module.exports = userModel;
