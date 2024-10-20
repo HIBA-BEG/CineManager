@@ -27,9 +27,9 @@ class FilmController {
   }
 
   async createFilm(req, res) {
-    console.log(req.body)
+    console.log('Received request body:', req.body);
     try {
-      const { titre, genres, duree, description, dateSortie, producer, status, releaseStreamDate } = req.body;
+      const { titre, genre, duree, description, dateSortie, producer, status, releaseStreamDate } = req.body;
       let afficheUrl = null;
       let videoUrl = null;
       // console.log(req.body)
@@ -49,10 +49,13 @@ class FilmController {
       //     .status(400)
       //     .json({ message: "All required fields must be provided" });
       // }
+      let genreIds = [];
 
+      genreIds = genre.replace(/[\[\]'\"]/g, '').split(',').map(id => id.trim());
+      
       const newFilmData = {
         titre,
-        genre : genres,
+        genre: genreIds,
         duree,
         description,
         dateSortie, 
@@ -62,7 +65,7 @@ class FilmController {
         affiche: afficheUrl,
         video: videoUrl,
       };
-
+      console.log(newFilmData)
       const newFilm = await FilmDao.create(newFilmData);
       res.status(201).json(newFilm);
     } catch (error) {
@@ -102,16 +105,7 @@ class FilmController {
       res.status(500).json({ message: error.message });
     }
   }
-
-  async searchFilms(req, res) {
-    try {
-      const films = await FilmDao.searchByTitle(req.query.title);
-      res.status(200).json(films);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
-  }
-
+  
   async getLatestFilms(req, res) {
     try {
       const films = await FilmDao.getLatestFilms(req.query.limit);

@@ -9,7 +9,6 @@ const filmSchema = new Schema({
     { 
     type: mongoose.Schema.Types.ObjectId, 
     ref: 'Genre',
-    // required: true,
   }],
   affiche: {
     type: String,

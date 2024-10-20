@@ -7,6 +7,7 @@ const UserRouter = require('./UsersRouter');
 const SeanceRouter = require('./SeanceRouter');
 const ReservationRouter = require('./ReservationRouter');
 const GenreRouter = require('./GenreRouter');
+const CommentaireRouter = require('./CommentaireRouter');
 const router = express.Router();
 
 
@@ -26,5 +27,6 @@ router.use('/api/salles', SalleRouter);
 router.use('/api/seances', SeanceRouter);
 router.use('/api/reservations', ReservationRouter);
 router.use('/api/genres', GenreRouter);
+router.use('/api/commentaires', CommentaireRouter);
 
 module.exports = router;

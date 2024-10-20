@@ -6,7 +6,7 @@ class UserController {
   async register(req, res) {
     try {
       const { email, password, nom, prenom, type, numero_telephone, adresse, birthday, abonnement } = req.body;
-// console.log(req.body)
+      // console.log(req.body)
       let profilePicUrl = null;
       
       if (req.files && req.files.profilePic) {
@@ -64,6 +64,7 @@ class UserController {
         return res.json({
           token,
           user: {
+            id: user._id,
             email: user.email,
             nom: user.nom,
             prenom: user.prenom,

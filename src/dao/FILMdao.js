@@ -61,7 +61,7 @@ class filmDao {
   }
 
   async create(FilmData) {
-    console.log("dao: " , FilmData)
+    console.log("dao: ", FilmData);
     try {
       const newFilm = new filmModel(FilmData);
       return await newFilm.save();
@@ -72,7 +72,9 @@ class filmDao {
 
   async updateById(id, updateData) {
     try {
-      return await filmModel.findByIdAndUpdate(id, updateData, { new: true }).populate("genre");
+      return await filmModel
+        .findByIdAndUpdate(id, updateData, { new: true })
+        .populate("genre");
     } catch (error) {
       throw new Error("Error updating Film" + error.message);
     }
@@ -92,20 +94,11 @@ class filmDao {
 
   async findByGenre(genreId) {
     try {
-      return await filmModel.find({ genre: genreId, archived_film: false }).populate("genre");
+      return await filmModel
+        .find({ genre: genreId, archived_film: false })
+        .populate("genre");
     } catch (error) {
       throw new Error("Error fetching Films by genre" + error.message);
-    }
-  }
-
-  async searchByTitle(title) {
-    try {
-      return await filmModel.find({
-        titre: { $regex: title, $options: "i" },
-        archived_film: false,
-      });
-    } catch (error) {
-      throw new Error("Error searching Films by title" + error.message);
     }
   }
 

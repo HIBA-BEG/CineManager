@@ -12,9 +12,17 @@ class CommentaireDao {
 
   async findByFilm(filmId) {
     try {
-      return await commentaireModel.find({ film: filmId }).populate('user', 'nom prenom');
+      return await commentaireModel.find({ film: filmId }).populate('user');
     } catch (error) {
       throw new Error('Error fetching Commentaires for Film' + error.message);
+    }
+  }
+ 
+  async findById(id) {
+    try {
+      return await commentaireModel.findById(id);
+    } catch (error) {
+      throw new Error("Error finding commentaire" + error.message);
     }
   }
 
