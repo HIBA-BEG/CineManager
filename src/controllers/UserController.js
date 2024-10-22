@@ -70,6 +70,7 @@ class UserController {
             prenom: user.prenom,
             type: user.type,
             abonnement: user.abonnement,
+            profilePic: user.profilePic,	
           },
         });
       })

@@ -24,7 +24,8 @@ class FavorisController {
 
   async createFavoris(req, res) {
     try {
-      const newFavoris = await FavorisDao.create(req.body);
+      const {film} = req.body;
+      const newFavoris = await FavorisDao.create({ user: req.user.id, film });
       res.status(201).json(newFavoris);
     } catch (error) {
       res.status(400).json({ message: error.message });
@@ -33,7 +34,8 @@ class FavorisController {
 
   async deleteFavoris(req, res) {
     try {
-      const deletedFavoris = await FavorisDao.deleteById(req.params.id);
+      const filmId = req.params.filmId;
+      const deletedFavoris = await FavorisDao.deleteById(filmId);
       if (!deletedFavoris) {
         return res.status(404).json({ message: "Favoris not found" });
       }
@@ -51,7 +53,17 @@ class FavorisController {
       res.status(500).json({ message: error.message });
     }
   }
-  
+
+  async checkFavorite(req, res) {
+    try {
+      const filmId = req.params.filmId;
+      const userId = req.user.id;
+      const isFavorite = await FavorisDao.isFavorite(userId, filmId);
+      res.status(200).json({ isFavorite });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  }
 }
 
 module.exports = new FavorisController();

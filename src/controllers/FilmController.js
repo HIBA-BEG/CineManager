@@ -27,12 +27,12 @@ class FilmController {
   }
 
   async createFilm(req, res) {
-    console.log('Received request body:', req.body);
+    console.log(req.body);
     try {
       const { titre, genre, duree, description, dateSortie, producer, status, releaseStreamDate } = req.body;
       let afficheUrl = null;
       let videoUrl = null;
-      // console.log(req.body)
+      console.log(status)
 
       if (req.files && req.files.affiche && req.files.affiche.length > 0) {
         const afficheFile = req.files.affiche[0];

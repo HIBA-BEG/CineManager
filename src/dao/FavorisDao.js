@@ -18,9 +18,9 @@ class FavorisDao {
     }
   }
 
-  async delete(userId, filmId) {
+  async deleteById(filmId) {
     try {
-      return await favorisModel.findOneAndDelete({ user: userId, film: filmId });
+      return await favorisModel.findOneAndDelete(filmId);
     } catch (error) {
       throw new Error('Error deleting Favoris' + error.message);
     }

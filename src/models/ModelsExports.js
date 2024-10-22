@@ -6,6 +6,7 @@ const userModel = require("./User");
 const ratingModel = require("./Rating");
 const genreModel = require("./Genre");
 const commentaireModel = require("./Commentaire");
+const favorisModel = require("./Favoris");
 
 
 module.exports = {
@@ -17,4 +18,5 @@ module.exports = {
   ratingModel,
   genreModel,
   commentaireModel,
+  favorisModel,
 };

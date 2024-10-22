@@ -8,6 +8,8 @@ const SeanceRouter = require('./SeanceRouter');
 const ReservationRouter = require('./ReservationRouter');
 const GenreRouter = require('./GenreRouter');
 const CommentaireRouter = require('./CommentaireRouter');
+const RatingRouter = require('./RatingRouter');
+const FavorisRouter = require('./FavorisRouter');
 const router = express.Router();
 
 
@@ -28,5 +30,7 @@ router.use('/api/seances', SeanceRouter);
 router.use('/api/reservations', ReservationRouter);
 router.use('/api/genres', GenreRouter);
 router.use('/api/commentaires', CommentaireRouter);
+router.use('/api/ratings', RatingRouter);
+router.use('/api/favoris', FavorisRouter);
 
 module.exports = router;

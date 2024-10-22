@@ -1,3 +1,4 @@
+const { default: mongoose } = require('mongoose');
 const { ratingModel } = require('../models/ModelsExports');
 
 class RatingDao {
@@ -60,13 +61,30 @@ class RatingDao {
 
   async getAverageRatingForFilm(filmId) {
     try {
+      // console.log('film:', filmId);
+      
+      if (!mongoose.Types.ObjectId.isValid(filmId)) {
+        throw new Error('Invalid film ID');
+      }
+
       const result = await ratingModel.aggregate([
-        { $match: { film: filmId } },
+        { $match: { film: new mongoose.Types.ObjectId(filmId) } },
         { $group: { _id: null, averageRating: { $avg: "$score" } } }
       ]);
+      // console.log("daoresult:",result);
+      
       return result.length > 0 ? result[0].averageRating : 0;
     } catch (error) {
+      // console.error('Error:', error);
       throw new Error('Error calculating average rating for film');
+    }
+  }
+
+  async findUserRatingForFilm(userId, filmId) {
+    try {
+      return await ratingModel.findOne({ user: userId, film: filmId }).populate('film');
+    } catch (error) {
+      throw new Error('Error fetching user rating for film');
     }
   }
 }
