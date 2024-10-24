@@ -14,6 +14,7 @@ class UserController {
         // console.log('Profile Pictwure Upload:', profilePicFile);
         profilePicUrl = await UserDao.uploadToMinioProfilePic(profilePicFile);
     }
+    console.log(profilePicUrl)
 
     const newUser = await UserDao.create({
       email,
@@ -71,6 +72,7 @@ class UserController {
             type: user.type,
             abonnement: user.abonnement,
             profilePic: user.profilePic,	
+            archived_user: user.archived_user,
           },
         });
       })
@@ -179,6 +181,46 @@ class UserController {
         return res.status(404).json({ message: "User not found" });
       }
       res.status(200).json({ message: "User activated successfully" });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  }
+
+  async getProfile(req, res) {
+    try {
+      const userId = req.user.id;
+      const user = await UserDao.getProfile(userId);
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      res.status(200).json(user);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  }
+
+  async updateMyProfile(req, res) {
+    try {
+      const userId = req.user.id;
+      const updatedUser = await UserDao.updateProfile(userId, req.body);
+      if (!updatedUser) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      updatedUser.hash_password = undefined;
+      res.status(200).json(updatedUser);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  }
+
+  async deleteMyAccount(req, res) {
+    try {
+      const userId = req.user.id;
+      const archivedUser = await UserDao.banUser(userId);
+      if (!archivedUser) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      res.status(200).json({ message: 'User profile deleted successfully' });
     } catch (error) {
       res.status(500).json({ message: error.message });
     }

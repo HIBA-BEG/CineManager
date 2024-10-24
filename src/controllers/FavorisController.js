@@ -47,7 +47,8 @@ class FavorisController {
 
   async getFavorisByUser(req, res) {
     try {
-      const favoris = await FavorisDao.findByUser(req.params.userId);
+      const favoris = await FavorisDao.findByUser(req.user.id);
+      // console.log("favoris", favoris);
       res.status(200).json(favoris);
     } catch (error) {
       res.status(500).json({ message: error.message });
